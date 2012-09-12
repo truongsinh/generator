@@ -42,15 +42,10 @@
             return new Generator(params, source);
         // If given both params and function
         if ( typeof source === "function") {
-            // If params is given in array
-            if (params instanceof Array) {
-                this.forEach = makeForEach_fromFunction(params, source);
-            } else {
-                throw new TypeError('Params must be in array');
-            }
+            this.forEach = makeForEach_fromFunction(params, source);
         }
         else if (typeof params === "function")
-            this.forEach = makeForEach_fromFunction([], params);
+            this.forEach = makeForEach_fromFunction(params);
         else if (params.constructor === Array)
             this.forEach = makeForEach_fromArray(params);
         else
@@ -75,6 +70,14 @@
     IterationError.prototype = Error.prototype;
 
     var makeForEach_fromFunction = function (p, f) {
+        if ( typeof p === "function") {
+        	f = p;
+        	p = [];
+        }
+        // If params is not given in array
+        else if (!(params instanceof Array)) {
+            throw new TypeError('Params must be in array');
+        }
         return function (g, thisObj) {
             var stopped = false,
                 index = 0,
