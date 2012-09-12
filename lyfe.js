@@ -340,12 +340,13 @@
     Generator.Count = Count;
     Generator.Range = Range;
     Generator.IterationError = IterationError;
+    var Lyfe = Generator;
     // Expose Lyfe as an AMD module.
     // Lowercase lyfe is used because AMD module names are derived from
     // file names, and Lyfe is normally delivered in a lowercase file name.
     if (typeof define === "function" && define.amd) {
         define("lyfe", [], function() {
-            return Generator;
+            return Lyfe;
         });
     }
     // Export the Lyfe object for **Node.js**, with
