@@ -37,16 +37,24 @@
 
     var BreakIteration = {};
 
-    var Generator = function (source) {
+    var Generator = function (params, source) {
         if (!(this instanceof Generator))
-            return new Generator(source);
-    
-        if (typeof source === "function")
-            this.forEach = makeForEach_fromFunction(source);
-        else if (source.constructor === Array)
-            this.forEach = makeForEach_fromArray(source);
+            return new Generator(params, source);
+        // If given both params and function
+        if ( typeof source === "function") {
+            // If params is given in array
+            if (params instanceof Array) {
+                this.forEach = makeForEach_fromFunction(params, source);
+            } else {
+                throw new TypeError('Params must be in array');
+            }
+        }
+        else if (typeof params === "function")
+            this.forEach = makeForEach_fromFunction([], params);
+        else if (params.constructor === Array)
+            this.forEach = makeForEach_fromArray(params);
         else
-            this.forEach = makeForEach_fromObject(source);
+            this.forEach = makeForEach_fromObject(params);
     };
     
     var asGenerator = function (source) {
@@ -66,7 +74,7 @@
     };
     IterationError.prototype = Error.prototype;
 
-    var makeForEach_fromFunction = function (f) {
+    var makeForEach_fromFunction = function (p, f) {
         return function (g, thisObj) {
             var stopped = false,
                 index = 0,
@@ -81,7 +89,7 @@
                     asGenerator(source).forEach(function (val) { Yield(val); })
                 };
             try {
-                f(Yield, yieldMany, stopIteration);
+                f.apply(this, p.concat([Yield, yieldMany, stopIteration]));
             } catch (ex) {
                 if (ex !== BreakIteration)
                     throw ex;
