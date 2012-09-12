@@ -1,0 +1,626 @@
+<!doctype html>
+<html>
+<head>
+<script src="lyfe.js"></script>
+<script>
+
+    function test(name, testFunction) {
+        document.write("<div style='float:left; width: 50%;'>");
+        document.write(name + ": ");
+        var result, exception;
+        try {
+            result = testFunction();
+        } catch (e) {
+            exception = e;
+        }
+        
+        if (result)
+            document.write("<b style='color:green'>passed</b>");
+        else if (exception)            
+            document.write("<b style='color:red'>exception: " + exception.message + "</b>");
+        else
+            document.write("<b style='color:red'>failed</b>");
+        document.write("</div>");
+    }
+
+    function arrEqual (a1, a2) {
+        if (a1.length != a2.length)
+            return false;
+            
+        for (var i = 0; i < a1.length; i++)
+            if (a1[i] !== a2[i])
+                return false;
+                
+        return true;
+    }
+
+
+</script>
+</head>
+<body>
+
+<script>
+    var helloWorld = function () { alert("hello world"); };
+    var a = [13, null, helloWorld, -10.5, "lolcat"];
+
+    test("array constructor", function () {
+        var roundtrip = Generator(a).toArray();
+        return arrEqual(a, roundtrip);
+    });
+    
+    test("function constructor", function () {
+        var g = Generator(function (Yield) {
+            Yield(13);
+            Yield(null);
+            Yield(helloWorld);
+            Yield(-10.5);
+            Yield("lolcat");
+        });
+        return arrEqual(a, g.toArray());
+    });
+    
+    test("object constructor", function () {
+        var g = Generator({
+            a: 13,
+            nothing: null,
+            hello: helloWorld
+        });
+        var res = g.toArray();
+        if (res.length !== 3)
+            return false;
+        if (!arrEqual(res[0], ["a", 13]))
+            return false;
+        if (!arrEqual(res[1], ["nothing", null]))
+            return false;
+        if (!arrEqual(res[2], ["hello", helloWorld]))
+            return false;
+        return true;
+    });
+    
+    test("filter", function () {
+        var nonNumbers = Generator(a).filter(function (val) { return typeof val !== "number" }).toArray();
+        return arrEqual(nonNumbers, [null, helloWorld, "lolcat"]);
+    });
+    
+    test("take", function () {
+        return arrEqual(Generator(a).take(3).toArray(), a.slice(0, 3));
+    });
+
+    test("take zero", function () {
+        return arrEqual(Generator(a).take(0).toArray(), []);
+    });
+    
+    test("skip", function () {
+        return arrEqual(Generator(a).skip(3).toArray(), a.slice(3));
+    });
+    
+    test("skip zero", function () {
+        return arrEqual(Generator(a).skip(0).toArray(), a);
+    });
+    
+    test("skip and take", function () {
+        return arrEqual(Generator(a).skip(2).take(2).toArray(), [helloWorld, -10.5]);
+    });
+    
+    test("map", function () {
+        var types = Generator(a).map(function (val) { return typeof val; }).toArray();
+        return arrEqual(types, ["number", "object", "function", "number", "string"]);
+    });
+    
+    test("zipWithArray, short array", function () {
+        var zipped = Generator(a).zipWithArray([2, 4, 3, 1], function (a, b) { return (typeof a).substr(0, b); }).toArray();
+        return arrEqual(zipped, ["nu", "obje", "fun", "n"]);
+    });
+
+    test("zipWithArray, long array", function () {
+        var zipped = Generator(a).zipWithArray([2, 4, 3, 1, 3, 4, 1, 9, 2], function (a, b) { return (typeof a).substr(0, b); }).toArray();
+        return arrEqual(zipped, ["nu", "obje", "fun", "n", "str"]);
+    });
+    
+    test("changing source array in zipWithArray", function () {
+        var arr = [2, 4, 3, 1];
+        var zipGen = Generator(a).zipWithArray(arr, function (a, b) { return (typeof a).substr(0, b); });
+        var zipped1 = zipGen.toArray();
+        arr.push(1, 2);
+        arr.shift();
+        var zipped2 = zipGen.toArray();
+        return arrEqual(zipped2, ["numb", "obj", "f", "n", "st"]);
+    });
+    
+    test("reduce", function () {
+        var sixFactorial = Generator([1, 2, 3, 4, 5, 6]).reduce(function (a, b) { return a * b; });
+        return sixFactorial === 720;
+    });
+    
+    test("reduce with custom start value", function () {
+        var concatenated = Generator(["f", "ai", "l", "ed"]).reduce(function (a, b) { return a + b; }, "not ");
+        return concatenated === "not failed";
+    });
+        
+    test("and", function () {
+        var b = [ "more", 2 / 7, { key: "value" } ];
+        return arrEqual(Generator(a).and(Generator(b)).toArray(), a.concat(b));
+    });
+
+    test("and with array", function () {
+        var b = [ "more", 2 / 7, { key: "value" } ];
+        return arrEqual(Generator(a).and(b).toArray(), a.concat(b));
+    });
+    
+    test("takeWhile", function () {
+        var noFunctions = Generator(a).takeWhile(function (val) { return typeof val !== "function" }).toArray();
+        return arrEqual(noFunctions, [13, null]);
+    });
+    
+    test("skipWhile", function () {
+        var startWithFalsy = Generator(a).skipWhile(function (val) { return val; }).toArray();
+        return arrEqual(startWithFalsy, a.slice(1));
+    });
+    
+    test("all", function () {
+        var r1 = Generator(a).all();
+        var r2 = Generator(["yes", 1, {}]).all();
+        return !r1 && r2;
+    });
+    
+    test("all short-circuits", function () {
+        var goodCount = 0;
+        var good = function () {
+            goodCount++;
+            return true;
+        };
+        var bad = function () {
+            return false;
+        }
+        var result = Generator([good, good, bad, good, bad]).map(function (f) { return f(); }).all();
+        return goodCount === 2 && !result;
+    });
+        
+    test("any", function () {
+        var r1 = Generator(a).any();
+        var r2 = Generator(["", null, 0]).any();
+        return r1 && !r2;
+    });
+    
+    test("any short-circuits", function () {
+        var goodCount = 0;
+        var good = function () {
+            goodCount++;
+            return true;
+        };
+        var bad = function () {
+            return false;
+        }
+        var result = Generator([bad, bad, good, good, bad, good, bad]).map(function (f) { return f(); }).any();
+        return goodCount === 1 && result;
+    });
+        
+    test("all and any with nothing", function () {
+        var nothing = Generator([]);
+        return nothing.all() && !nothing.any();
+    });
+    
+    test("first", function () {
+        var g = Generator(a);
+        return (g.skip(2).first() === helloWorld) && (typeof g.skip(20).first() === "undefined");
+    });
+    
+    test("groupBy", function () {
+        var grouped = Generator(a).groupBy(function (v) { return (typeof v).substr(1,1) });
+        var expected_groups = ["u", "b", "t"];
+        var expected_contents = {
+            u: [13, helloWorld, -10.5],
+            b: [null],
+            t: ["lolcat"]
+        };
+        good = true;
+        grouped.forEach(function (val) {
+            var g = expected_groups.shift();
+            if (val.key !== g) {
+                good = false;
+                return;
+            }
+            if (!arrEqual(val.toArray(), expected_contents[g]))
+                good = false;
+        });
+        return good;
+            
+    
+    });
+    
+    test("send to Yield", function () {
+        var gen = Generator(function (Yield) {
+            Yield("first");
+            var other = Yield("second");
+            Yield(other);
+            Yield("end");
+        });
+        var arr = [];
+        gen.forEach(function (val) {
+            arr.push(val);
+            return "third";
+        });
+        return arrEqual(arr, ["first", "second", "third", "end"]);
+    });
+    
+    
+    test("stop", function () {
+        var good = true;
+        var gen = Generator(function (Yield) {
+            Yield(42);
+            Yield(1337);
+            Yield(-5);
+            good = false;
+            Yield(100);
+        });
+        var lastValue;
+        gen.forEach(function (val, index, stop) {
+            lastValue = val;
+            if (val < 0)
+                stop();
+        });
+        return good && lastValue === -5;
+    });
+       
+    test("cleanup when stopping outer", function () {
+        var innerClean = false,
+            outerClean = false;
+        var inner = Generator(function (Yield, yieldMany) {
+            try {
+                yieldMany(Generator([1, 2, 3, 4]));
+            } finally {
+                innerClean = true;
+            }
+        });
+        
+        var outer = Generator(function (Yield, yieldMany, stop) {
+            try {
+                inner.forEach(function (val, index) {
+                    Yield(val);
+                    if (val > 1)
+                        stop();
+                });
+            } finally {
+                outerClean = true;
+            }
+        });
+
+        var result = outer.toArray();
+        return arrEqual(result, [1, 2]) && innerClean && outerClean;
+    });
+
+    test("cleanup when stopping inner", function () {
+        var innerClean = false,
+            outerClean = false;
+        
+        var inner = Generator(function (Yield, yieldMany) {
+            try {
+                yieldMany(Generator([1, 2, 3, 4]));
+            } finally {
+                innerClean = true;
+            }
+        });
+        
+        var outer = Generator(function (Yield) {
+            try {
+                inner.forEach(function (val, index, stop) {
+                    Yield(val);
+                    if (val > 1)
+                        stop();
+                });
+            } finally {
+                outerClean = true;
+            }
+        });
+
+        var result = outer.toArray();
+        return arrEqual(result, [1, 2]) && innerClean && outerClean;
+    });
+    
+    test("yieldMany", function () {
+        
+        var nested = [ [1, 7], 9, [3, [1, 8], 5], [2, [2, 3, 4]]];
+        
+        var flatten = function (element) {
+            if (typeof element === "number")
+                return Generator([element]);
+            
+            return Generator(function (Yield, yieldMany) {
+                Generator(element).forEach(function (val) {
+                    yieldMany(flatten(val));
+                });
+            });
+        };
+        
+        return arrEqual(flatten(nested).toArray(), [1, 7, 9, 3, 1, 8, 5, 2, 2, 3, 4]);
+    });
+
+    test("yieldMany with array", function () {
+        
+        var nested = [ [1, 7], 9, [3, [1, 8], 5], [2, [2, 3, 4]]];
+        
+        var flatten = function (element) {
+            if (typeof element === "number")
+                return [element];
+            
+            return Generator(function (Yield, yieldMany) {
+                Generator(element).forEach(function (val) {
+                    yieldMany(flatten(val));
+                });
+            }).toArray();
+        };
+        
+        return arrEqual(flatten(nested), [1, 7, 9, 3, 1, 8, 5, 2, 2, 3, 4]);
+    });
+    
+    test("changing source array", function () {
+        var arr = ["x", 42, null];
+        var gen = Generator(arr);
+        arr.push(helloWorld);
+        return arrEqual(gen.toArray(), arr);
+    });
+    
+    test("evaluated", function () {
+        var called = 0;
+        var square = function (x) { called++; return x * x; };
+        var numbers = Generator([1, 3, 5]);
+        var squares = numbers.map(square).evaluated();
+        
+        var doubled = squares.and(squares).toArray()
+        return arrEqual(doubled, [1, 9, 25, 1, 9, 25]) && called == 3;
+    });
+    
+    test("thisObj argument to filter", function () {
+        var good1, good2;
+        var obj = { foo: 123 };
+        var gen = Generator([42]);
+        gen.filter(function (x) { good1 = this === window; return true; }).toArray();
+        gen.filter(function (x) { good2 = this === obj; return true; }, obj).toArray();
+        return good1 && good2;
+    });
+
+    test("thisObj argument to map", function () {
+        var good1, good2;
+        var obj = { foo: 123 };
+        var gen = Generator([42]);
+        gen.map(function (x) { good1 = this === window; return 43; }).toArray();
+        gen.map(function (x) { good2 = this === obj; return 43; }, obj).toArray();
+        return good1 && good2;
+    });
+
+    test("thisObj argument to forEach", function () {
+        var good1, good2;
+        var obj = { foo: 123 };
+        var gen = Generator([42]);
+        gen.forEach(function (x) { good1 = this === window; });
+        gen.forEach(function (x) { good2 = this === obj; }, obj);
+        return good1 && good2;
+    });
+    
+    test("array constructor doesn't yield unset/deleted elements", function () {
+        var arr = [2, undefined, "bla", helloWorld, false];
+        arr[12] = "late";
+        delete arr[3];
+        return arrEqual(Generator(arr).toArray(), [2, undefined, "bla", false, "late"]);
+    });
+    
+    test("groupBy only starts on iteration", function () {
+        var called = false;
+        var grouper = function (x) { called = true; return typeof x; }
+        var g = Generator(a).groupBy(grouper);
+        if (called)
+            return false;
+        g.evaluated();
+        return called;
+    });
+    
+    test("groupBy re-groups everytime", function () {
+        var arr = [1, 2, -1];
+        var g = Generator(arr).groupBy(function (v) { return v > 0; });
+        var first = g.map(function (x) { return x.toArray(); }).toArray();
+        arr[1] = -2;
+        var second = g.map(function (x) { return x.toArray(); }).toArray();
+        
+        var good = first.length === 2 && second.length === 2;
+        good = good && arrEqual(first[0], [1, 2]) && arrEqual(first[1], [-1]);
+        good = good && arrEqual(second[0], [1]) && arrEqual(second[1], [-2, -1]);
+        return good;
+    });
+    
+    test("late yield throws exception", function () {
+        var leaked, good = false, seen = [];
+           
+        var g = Generator(function (Yield) {
+            leaked = Yield;
+            Yield(1);
+            Yield("forty-two");
+        });
+        
+        g.forEach(function (val) { seen.push(val); });
+        
+        if (!(typeof leaked === "function"))
+            return false;
+            
+        try {
+            leaked("boo");
+        } catch (e) {
+            if (e instanceof Generator.IterationError && e.message === "yield after end of iteration")
+                good = true;
+            else
+                throw e;
+        }
+        return good && arrEqual(seen, [1, "forty-two"]);
+    });
+
+    test("yield after stop throws exception", function () {
+        var leaked, good = false, seen = [];
+           
+        var g = Generator(function (Yield) {
+            leaked = Yield;
+            Yield(1);
+            Yield("forty-two");
+            Yield(3);
+        });
+        
+        g.forEach(function (val, index, stop) { seen.push(val); if (typeof val === "string") stop(); });
+        
+        if (!(typeof leaked === "function"))
+            return false;
+            
+        try {
+            leaked("boo");
+        } catch (e) {
+            if (e instanceof Generator.IterationError && e.message === "yield after end of iteration")
+                good = true;
+            else
+                throw e;
+        }
+        return good && arrEqual(seen, [1, "forty-two"]);
+    });
+
+    test("yield after exception throws exception", function () {
+        var leaked, good = false, seen = [];
+           
+        var g = Generator(function (Yield) {
+            leaked = Yield;
+            Yield(1);
+            Yield("forty-two");
+            Yield(3);
+        });
+        try {
+            g.forEach(function (val) { seen.push(val); if (typeof val === "string") null(); });
+        } catch (e) {
+            if (!e instanceof TypeError)
+                throw e;
+        }
+        
+        if (!(typeof leaked === "function"))
+            return false;
+            
+        try {
+            leaked("boo");
+        } catch (e) {
+            if (e instanceof Generator.IterationError && e.message === "yield after end of iteration")
+                good = true;
+            else
+                throw e;
+        }
+        return good && arrEqual(seen, [1, "forty-two"]);
+    });
+    
+    test("except", function() {
+        var good = arrEqual(Generator(a).except(helloWorld).toArray(), [13, null, -10.5, "lolcat"]);
+        good = good && arrEqual(Generator([1, 3, 3, 7]).except(3).toArray(), [1, 7]);
+        return good;
+    });
+    
+    test("sortBy", function () {
+        return arrEqual(Generator(a).sortBy(function (x) { return typeof x; }).toArray(), [helloWorld, 13, -10.5, null, "lolcat"]);
+    });
+
+    test("sortBy is (probably) stable", function () {
+        var realSort = Array.prototype.sort;
+        Array.prototype.sort = function (f) { this.reverse(); realSort.call(this, f); };
+        var good = arrEqual(Generator(a).sortBy(function (x) { return typeof x; }).toArray(), [helloWorld, 13, -10.5, null, "lolcat"]);
+        Array.prototype.sort = realSort;
+        return good;
+    });
+    
+    test("sortBy is cranky", function () {
+        var good = false;
+        try {
+            Generator(a).sortBy(function (x) { return NaN; }).toArray();
+        } catch (e) {
+            good = e instanceof TypeError && /^cannot compare/.test(e.message);
+        }
+        try {
+            var v = true;
+            Generator(a).sortBy(function (x) { v = !v; return v ? "0" : 0; }).toArray();
+        } catch (e) {
+            good = good && e instanceof TypeError && /^cannot compare/.test(e.message);
+        }
+        return good;
+    });
+    
+    test("any with predicate", function () {
+        var good = Generator(a).any(function (x) { return typeof x === "function" });
+        good = good && !Generator([-3, -7, 0]).any(function (x) { return x > 0; });
+        return good;
+    });
+
+    test("all with predicate", function () {
+        var good = !Generator(a).all(function (x) { return typeof x === "function" });
+        good = good && Generator([-3, -7, 0]).all(function (x) { return x <= 0; });
+        return good;
+    });
+    
+    test("count", function () {
+        var good = Generator(a).count() === 5 && Generator([]).count() === 0;
+        var withHole = [1,2,3,,4];
+        return good && Generator(withHole).count() === 4;
+    });
+    var o0 = {foo: 12, bar: "hello"},
+        o1 = {foo: -3, bar: false},
+        o2 = {foo: 0, bar: null},
+        o3 = {foo: 42, bar: "hello"},
+        o4 = {foo: -1},
+        objects = Generator([o0, o1, o2, o3, o4]);
+        
+    function testSelector(method, expectFoo, expectBar) {
+        test(method + " with string", function () {
+            return arrEqual(objects[method]("foo").toArray(), expectFoo) && arrEqual(objects[method]("bar").toArray(), expectBar);
+        });
+    }
+    
+    testSelector("filter", [o0, o1, o3, o4], [o0, o3]);
+    testSelector("map", [12, -3, 0, 42, -1], ["hello", false, null, "hello", undefined]);
+    testSelector("takeWhile", [o0, o1], [o0]);
+    testSelector("skipWhile", [o2, o3, o4], [o1, o2, o3, o4]);
+    test("all with string", function () {
+        var good = !objects.all("foo");
+        good = good && Generator([]).all("foo");
+        good = good && objects.except(o2).all("foo");
+        good = good && !objects.all("bar");
+        good = good && Generator([o0, o3]).all("bar");
+        good = good && !Generator([o0, o3, o4]).all("bar");
+        return good;
+    });
+    test("any with string", function () {
+        var good = objects.any("foo");
+        good = good && !Generator([]).any("foo");
+        good = good && objects.any("bar");
+        good = good && !Generator([o1, o2, o4]).any("bar");
+        good = good && objects.except(o0).any("bar");
+        return good;
+    });
+    test("groupBy with string", function () {
+        var grouped = objects.groupBy("bar");
+        var expected_groups = ["hello", false, null, undefined];
+        var expected_contents = [
+            [o0, o3],
+            [o1],
+            [o2],
+            [o4]
+        ]
+        var good = true;
+        grouped.forEach(function (val) {
+            var g = expected_groups.shift(),
+                e = expected_contents.shift();
+            if (val.key !== g) {
+                good = false;
+                return;
+            }
+            if (!arrEqual(val.toArray(), e))
+                good = false;
+        });
+        return good;
+    });
+    test("sortBy with string", function () {
+        return arrEqual(objects.sortBy("foo").toArray(), [o1, o4, o2, o0, o3])
+    })
+    
+</script>
+
+
+</body>
+</html>
