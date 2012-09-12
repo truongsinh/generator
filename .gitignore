@@ -1,2 +1,5 @@
 # Mercurial meta
 .hg*
+# IDE metadata
+.project
+.settings
