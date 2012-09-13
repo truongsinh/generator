@@ -28,10 +28,10 @@ Opera, Safari, and Internet Explorer (in the latter, also various emulation mode
 etc).
 
 #Documentation
-* [Creating generators](/tran-nguyen/generator/blob/master/doc/creating-generators.md)
+* [Creating generators] (/tran-nguyen/generator/blob/master/doc/creating-generators.md)
 * [Methods exposed by generator objects] (/tran-nguyen/generator/blob/master/doc/generator-methods.md)
 * [Caveats] (/tran-nguyen/generator/blob/master/doc/caveats.md)
-* Yield versus this.yield
+* [Yield versus this.yield] (/tran-nguyen/generator/blob/master/doc/yield-versus-this.yield.md)
 
 #Contribute
 So go ahead: Try it, use it, and please give feedback and suggestions. Bug reports, patches and new
