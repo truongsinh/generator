@@ -30,7 +30,7 @@ generator stops.
 
 If the optional function is given, the test is made on the results of calling the function on the
 generated values; not on the values themselves. In other words, `gen.all(func)` is equivalent to
-`gen.map(func).all()`. Instead of a function, you can also pass a string; see "String selectors".
+`gen.map(func).all()`. Instead of a function, you can also pass a string; see [String selectors](#string-selectors).
 
 The method always returns a boolean, regardless of the actual generated values.
 
@@ -59,7 +59,7 @@ of the source generator stops.
 
 If the optional function is given, the test is made on the results of calling the function on the
 generated values; not on the values themselves. In other words, `gen.any(func)` is equivalent to
-`gen.map(func).any()`. Instead of a function, you can also pass a string; see "String selectors".
+`gen.map(func).any()`. Instead of a function, you can also pass a string; see [String selectors](#string-selectors).
 
 The method always returns a boolean, regardless of the actual generated values.
 
@@ -128,7 +128,7 @@ console.log(numbers.except(3).toArray()); // [1, 2, 4, 5, 6, 7, 8, 9]
 
 Returns a new generator that generates only those values of the source generator for which the
 given function returns a truthy value. If you're used to Linq, you know this method as
-`.Where()`. Instead of a function, you can also pass a string; see "String selectors".
+`.Where()`. Instead of a function, you can also pass a string; see [String selectors](#string-selectors).
 
 If the additional parameter `thisObj` is given, it will be available to the function as `this`.
 
@@ -218,7 +218,7 @@ that's all
 
 Returns a generator that in turn yields generators, or groups. All values of the source generator
 for which `grouperFunction` returns identical values (as defined by the `===` operator) are put
-into one group. Instead of a function, you can also pass a string; see "String selectors".
+into one group. Instead of a function, you can also pass a string; see [String selectors](#string-selectors).
 
 A group (generator) has an additional property `key`, which is the result of calling
 `grouperFunction` on each of the values in this group.
@@ -266,7 +266,7 @@ Values of type boolean:
 ## generator.map(func [, thisObj]) ===
 Returns a new generator whose values are the results of applying the given function to each of the
 source elements. If you're used to Linq, you know this method as `.Select()`. Instead of a
-function, you can also pass a string; see "String selectors" at the top of this page.
+function, you can also pass a string; see [String selectors](#string-selectors) at the top of this page.
 
 If the additional parameter `thisObj` is given, it will be available to the function as `this`.
 
@@ -320,7 +320,7 @@ console.log(gen.skip(3).toArray()); // [3, 4, "end"]
 
 ## generator.skipWhile(func)
 
-Returns a new generator that generates all values of the source generator, except for a consecutive run of values at the beginning for which the given function returns a truthy value. As soon as this function has returned false, it will not be called again. The first value generated is the one for which the function returned false. Instead of a function, you can also pass a string; see "String selectors" at the top of this page.
+Returns a new generator that generates all values of the source generator, except for a consecutive run of values at the beginning for which the given function returns a truthy value. As soon as this function has returned false, it will not be called again. The first value generated is the one for which the function returned false. Instead of a function, you can also pass a string; see [String selectors](#string-selectors) at the top of this page.
 
 ### Example
 
@@ -336,7 +336,7 @@ console.log(strings.skipWhile(isLong).toArray()); // ["few", "letters"]
 
 Returns a new generator that generates the values of the (finite!) source generator, sorted in
 ascending order by the value that `func` returns. Instead of a function, you can also pass a
-string; see "String selectors".
+string; see [String selectors](#string-selectors).
 
 This function is not as flexible as JavaScript's `Array.sort`, but is made for the usual case that
 you're sorting by some value or string. The two major differences:
@@ -378,7 +378,7 @@ console.log(gen.take(3).toArray()); // ["start", 1, 2]
 Returns a new generator that generates values from the beginning of the source generator, and stops
 when it finds a value for which the given function returns a falsy value. Evaluation of the source
 generator stops at this point, so the predicate function will only return false once.
-Instead of a function, you can also pass a string; see "String selectors".
+Instead of a function, you can also pass a string; see [String selectors](#string-selectors).
 
 ### Example
 
