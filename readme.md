@@ -28,7 +28,7 @@ Opera, Safari, and Internet Explorer (in the latter, also various emulation mode
 etc).
 
 #Documentation
-* [Creating generators](generator/blob/master/doc/creating_generators.md)
+* [Creating generators](/generator/blob/master/doc/creating_generators.md)
 * Methods exposed by generator objects
 * Caveats
 * Yield versus this.yield
