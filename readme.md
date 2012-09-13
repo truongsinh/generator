@@ -28,8 +28,8 @@ Opera, Safari, and Internet Explorer (in the latter, also various emulation mode
 etc).
 
 #Documentation
-* [Creating generators](/tran-nguyen/generator/blob/master/doc/creating_generators.md)
-* [Methods exposed by generator objects] (/tran-nguyen/generator/blob/master/doc/generator_methods.md)
+* [Creating generators](/tran-nguyen/generator/blob/master/doc/creating-generators.md)
+* [Methods exposed by generator objects] (/tran-nguyen/generator/blob/master/doc/generator-methods.md)
 * [Caveats] (/tran-nguyen/generator/blob/master/doc/caveats.md)
 * Yield versus this.yield
 
