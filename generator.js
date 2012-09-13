@@ -75,7 +75,7 @@
         	p = [];
         }
         // If params is not given in array
-        else if (!(params instanceof Array)) {
+        else if (!(p instanceof Array)) {
             throw new TypeError('Params must be in array');
         }
         return function (g, thisObj) {
