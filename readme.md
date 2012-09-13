@@ -29,7 +29,7 @@ etc).
 
 #Documentation
 * [Creating generators](/tran-nguyen/generator/blob/master/doc/creating_generators.md)
-* [Methods exposed by generator objects] (/tran-nguyen/generator/blob/master/doc/generators_methods.md)
+* [Methods exposed by generator objects] (/tran-nguyen/generator/blob/master/doc/generator_methods.md)
 * Caveats
 * Yield versus this.yield
 
