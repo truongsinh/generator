@@ -26,3 +26,16 @@ contains a simple test HTML page. Just open it in the browser you want to test s
 everything's green, everything's good. I regularly check the current versions of Chrome, Firefox,
 Opera, Safari, and Internet Explorer (in the latter, also various emulation modes for IE8, IE7
 etc).
+
+#Documentation
+* Creating generators
+* Methods exposed by generator objects
+* Caveats
+* Yield versus this.yield
+
+#Contribute
+So go ahead: Try it, use it, and please give feedback and suggestions. Bug reports, patches and new
+ideas will be very much appreciated!
+
+#Credit
+<to be updated>
