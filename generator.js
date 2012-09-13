@@ -351,29 +351,28 @@
     Generator.Count = Count;
     Generator.Range = Range;
     Generator.IterationError = IterationError;
-    var Lyfe = Generator;
     // Expose Lyfe as an AMD module.
     // Lowercase lyfe is used because AMD module names are derived from
     // file names, and Lyfe is normally delivered in a lowercase file name.
     if (typeof define === "function" && define.amd) {
-        define("lyfe", [], function() {
-            return Lyfe;
+        define("generator", [], function() {
+            return Generator;
         });
     }
     // Export the Lyfe object for **Node.js**, with
     // backwards-compatibility for the old `require()` API.
     else if (typeof exports !== 'undefined') {
         if (typeof module !== 'undefined' && module.exports) {
-            exports = module.exports = Lyfe;
+            exports = module.exports = Generator;
         }
-        exports.Lyfe = Lyfe;
+        exports.Generator = Generator;
     }
     // Otherwise, we're in the browser without AMD
-    // add `Lyfe` as a global object via a string identifier,
+    // add `Generator` as a global object via a string identifier,
     // for Closure Compiler "advanced" mode.
     else {
         // Establish the root object, `window` in the browser, or `global` on the server.
         var root = this;
-        root['Lyfe'] = Lyfe;
+        root['Generator'] = Generator;
     }
 })();
