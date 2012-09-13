@@ -1,5 +1,23 @@
 {
-	"name": "lyfe",
+	"name": "generator",
 	"version": "0.1.0",
-	"main": "./generator.js"
+	"author": "Benjamin Dumke-von der Ehe <mail at firstname dash first-five-letters-of-lastname dot de>, TruongSinh Tran-Nguyen <truongsinh.tran@gmail.com> ",
+	"description": "Generator is an experimental implementation of (pythonic) generator functions to be used in ECMAScript as specified in in ECMA-262, 3rd edition, i.e. JavaScript that every browser understands.",
+	"main": "./generator.js",
+	"contributors": [ 
+		{
+			"name": "Benjamin Dumke-von der Ehe",
+			"email": "mail at firstname dash first-five-letters-of-lastname dot de"
+		},
+		{
+			"name": "TruongSinh Tran-Nguyen",
+			"email": "truongsinh.tran@gmail.com"
+		},
+	],
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:tran-nguyen/generator.git"
+	},
+	"keywords": [],
+	"license": "MIT"
 }

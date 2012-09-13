@@ -1,5 +1,5 @@
-Generator is an experimental implementation of generator functions ECMAScript as specified in in
-ECMA-262, 3rd edition, i.e. JavaScript that every browser understands.
+Generator is an experimental implementation of (pythonic) generator functions to be used in
+ECMAScript as specified in in ECMA-262, 3rd edition, i.e. JavaScript that every browser understands.
 
 #You never know what it'll yield you.
 
