@@ -83,7 +83,10 @@
             return undefined;
         };
     }
-
+    // For those who use myVar.toArray() without knowing whether it is array or generator
+    Array.prototype.toArray = function(){
+        return this;
+    };
     var BreakIteration = {};
 
     var Generator = function (params, source) {

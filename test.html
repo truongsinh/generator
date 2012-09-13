@@ -656,6 +656,16 @@
     	outArray = myGenerator.toArray();
         return arrEqual(outArray,expectedArray);
     });
+    test("array and generator .toArray()", function () {
+    	input = [0,2,4];
+    	expectedOutput = [0,4,8]
+    	output = Generator([input], function(input, Yield){
+    		input.forEach(function(element){
+    			Yield(element*2);
+    		});
+    	});
+        return arrEqual(expectedOutput.toArray(),output.toArray());
+    });
 </script>
 
 
