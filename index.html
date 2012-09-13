@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Generator by tran-nguyen</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Generator</h1>
+        <p class="header">Generator is an experimental implementation of generator functions ECMAScript as specified in in ECMA-262, 3rd edition, i.e. JavaScript that every browser understands.</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/tran-nguyen/generator/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/tran-nguyen/generator/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/tran-nguyen/generator">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/tran-nguyen">tran-nguyen</a></p>
+
+
+      </header>
+      <section>
+        <p>Generator is an experimental implementation of generator functions ECMAScript as specified in in
+ECMA-262, 3rd edition, i.e. JavaScript that every browser understands.</p>
+
+<h1>You never know what it'll yield you.</h1>
+
+<p>This is an experimental but pretty functional project, trying to make yield-based generator
+functions available (to a certain extent) in "normal"JavaScript, i.e. JavaScript 1.5, the dialect
+that any reasonably modern browser understands.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">test</span> <span class="o">=</span> <span class="nx">Generator</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">Yield</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">Yield</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="kc">false</span><span class="p">)</span>
+        <span class="nx">Yield</span><span class="p">(</span><span class="s2">"ignore me"</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="nx">Yield</span><span class="p">(</span><span class="s2">" world"</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
+<span class="p">});</span>
+<span class="kd">var</span> <span class="nx">test2</span> <span class="o">=</span> <span class="nx">Generator</span><span class="p">([</span><span class="s2">"!"</span><span class="p">]);</span>
+<span class="kd">var</span> <span class="nx">array</span> <span class="o">=</span> <span class="nx">test</span><span class="p">.</span><span class="nx">and</span><span class="p">(</span><span class="nx">test2</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">();</span> <span class="p">}).</span><span class="nx">toArray</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">array</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">""</span><span class="p">));</span> <span class="c1">// "HELLO WORLD!"</span>
+</pre></div>
+
+<p>It is a self-contained and fairly small library (minified and gzipped, it's just over one
+kilobyte), and it should work in all modern and not-quite-so-modern browsers. The repository
+contains a simple test HTML page. Just open it in the browser you want to test support for; if
+everything's green, everything's good. I regularly check the current versions of Chrome, Firefox,
+Opera, Safari, and Internet Explorer (in the latter, also various emulation modes for IE8, IE7
+etc).</p>
+
+<h1>Documentation</h1>
+
+<ul>
+<li><a href="/tran-nguyen/generator/blob/master/doc/creating_generators.md">Creating generators</a></li>
+<li>Methods exposed by generator objects</li>
+<li>Caveats</li>
+<li>Yield versus this.yield</li>
+</ul><h1>Contribute</h1>
+
+<p>So go ahead: Try it, use it, and please give feedback and suggestions. Bug reports, patches and new
+ideas will be very much appreciated!</p>
+
+<h1>Credit</h1>
+
+<p></p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
