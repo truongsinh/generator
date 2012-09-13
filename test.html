@@ -617,8 +617,45 @@
     });
     test("sortBy with string", function () {
         return arrEqual(objects.sortBy("foo").toArray(), [o1, o4, o2, o0, o3])
-    })
-    
+    });
+    test("loop and make generator from function with params (pipeline, _.map)", function () {
+    	var inArray,expectedArray , myGenerator, outArray;
+    	inArray = myGenerator = [0,1,2,3,4];
+    	expectedArray = [0, 1024, 2048, 3072, 4096];
+    	for(var i = 0; i<10; i++){
+    		myGenerator = Generator([myGenerator], function(myGenerator, Yield){
+    			myGenerator.forEach(function(element){
+    				Yield(element*2)
+    			});
+    		});
+    	}
+    	outArray = myGenerator.toArray();
+    	return arrEqual(outArray, expectedArray);
+        //return arrEqual(objects.sortBy("foo").toArray(), [o1, o4, o2, o0, o3])
+    });
+    test("yield some values, skip the rest (._filter, _.only)", function () {
+    	var inArray,expectedArray , myGenerator, outArray;
+    	inArray = [];
+    	for(var i=1; i<=100;i++){
+    		inArray.push(i);
+    	}
+    	expectedArray = [1, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+    	myGenerator = inArray;
+    	for(var i=2; i<=10; i++){
+    		myGenerator = Generator([myGenerator, i], function(myGenerator, i, Yield){
+    			myGenerator.forEach(function(element){
+    				if(element % i == 0){
+    					return;
+    				}
+    				else{
+    					Yield(element);
+    				}
+    			});
+    		});
+    	}
+    	outArray = myGenerator.toArray();
+        return arrEqual(outArray,expectedArray);
+    });
 </script>
 
 
