@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2011, 2012 Benjamin Dumke-von der Ehe
+ * Copyright (c) 2011 - 2012 Benjamin Dumke-von der Ehe, TruongSinh Tran-Nguyen
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
