@@ -39,3 +39,7 @@ ideas will be very much appreciated!
 
 #Credit
 <to be updated>
+
+#Keywords
+yield, generator, iterator, pythonic, javascript, ECMA-262, ECMAScript, KJS, Rhino, SpiderMonkey,
+V8, WebKit, Carakan, Chakra
