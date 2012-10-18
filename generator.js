@@ -178,9 +178,24 @@
   }
 
   Generator.prototype = {
-    toArray: function () {
+    toArray: function (param) {
+      var limit = 0;
+      var BreakException = {};
+      if(param)
+      {
+        if(param.number > 0) limit = param.limit;
+        else limit = param;
+      }
       var result = [];
-      this.forEach(function (val) { result.push(val); });
+      var counter = 1;
+      try{
+        this.forEach(function (val) {
+          if(limit && counter > limit) throw BreakException;
+          result.push(val);
+          counter++;
+        });
+      }
+      catch(e){}
       return result;
     },
     filter: function (pred, thisObj) {
